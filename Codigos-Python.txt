@@ -7,3 +7,5 @@ env\Scripts\activate.bat
 pip install uvicorn
 
 uvicorn main:app --reload
+
+pip install -r requeriments.txt

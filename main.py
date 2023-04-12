@@ -9,7 +9,7 @@ app = FastAPI()
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "Hello Fucking World"}
 
 @app.post("/uploadfile/")
 async def create_upload_file(file: UploadFile = File(...)):
