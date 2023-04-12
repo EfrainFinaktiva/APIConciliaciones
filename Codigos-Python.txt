@@ -1,0 +1,9 @@
+python3 -m venv entornovirtual-env
+
+python3 -m env env
+
+env\Scripts\activate.bat
+
+pip install uvicorn
+
+uvicorn main:app --reload
