@@ -43,7 +43,12 @@ async def create_upload_file(file: UploadFile = File(...)):
 
     # Insertar los registros de la página 1 a la base de datos
     for data in data_pg1:
-        db_conn.insertar_registro(data)
+        validation = db_conn.consultar_registro(data)
+        
+        if (validation):
+            db_conn.actualizar_registro(data)
+        else:
+            db_conn.insertar_registro(data)
 
     # Crear una lista para almacenar los registros de Insercion_Datos del resto de las páginas
     data_resto = []
@@ -67,7 +72,12 @@ async def create_upload_file(file: UploadFile = File(...)):
 
     # Insertar los registros del resto de las páginas a la base de datos
     for data in data_resto:
-        db_conn.insertar_registro(data)
+        validation = db_conn.consultar_registro(data)
+        
+        if (validation):
+            db_conn.actualizar_registro(data)
+        else:
+            db_conn.insertar_registro(data)
 
     # Cerrar la conexión a la base de datos
     db_conn.desconectar()
