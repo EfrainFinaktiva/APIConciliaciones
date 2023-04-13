@@ -145,3 +145,19 @@ class DB_Connection:
         self.cursor.execute(sql, valores)
         self.conexion.commit()
         self.desconectar()
+        
+    def insertar_trazabilidad(self, name_file, raw_count):
+        self.conectar()
+        
+        sql = """
+            INSERT INTO archivos (nombre_archivo, registros)
+            VALUES (%s, %s)
+        """
+        valores = (
+            name_file,
+            raw_count
+        )
+        
+        self.cursor.execute(sql, valores)
+        self.conexion.commit()
+        self.desconectar()
