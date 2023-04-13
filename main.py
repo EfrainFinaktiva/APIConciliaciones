@@ -1,4 +1,5 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 import tabula
 import pandas as pd
@@ -7,11 +8,25 @@ from data_models import Insercion_Datos
 
 app = FastAPI()
 
+# agregar cabeceras CORS
+origins = [
+    "http://localhost",
+    "http://localhost:4200",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 @app.get("/")
 async def root():
     return {"message": "Hello Fucking World"}
 
-@app.post("/uploadfile/")
+@app.post("/uploadfile")
 async def create_upload_file(file: UploadFile = File(...)):
     name_file = file.filename
     
@@ -47,6 +62,7 @@ async def create_upload_file(file: UploadFile = File(...)):
         
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Error {type(e).__name__}: {str(e)}")
+        
     
     # Crear una lista para almacenar los registros de Insercion_Datos del resto de las páginas
     data_resto = []
