@@ -1,10 +1,12 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
-import tabula
-import pandas as pd
 from db_utils import DB_Connection
 from data_models import Insercion_Datos
+import tabula
+import pandas as pd
+import os
+import shutil
 
 app = FastAPI()
 
@@ -28,7 +30,9 @@ async def root():
 
 @app.post("/uploadfile")
 async def create_upload_file(file: UploadFile = File(...)):
-    name_file = file.filename
+    
+    #name_file = file.filename
+    name_file = await save_file_locally(file)
     
     #Validar si el archivo es PDF
     if not name_file.lower().endswith('.pdf'):
@@ -58,10 +62,10 @@ async def create_upload_file(file: UploadFile = File(...)):
         db_conn = DB_Connection("127.0.0.1", "root", "root", "pagos")
 
         # Insertar los registros de la página 1 a la base de datos
-        insertar_datos_base(data_pg1, db_conn)
+        insert_data_base(data_pg1, db_conn)
         
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Error {type(e).__name__}: {str(e)}")
+        raise HTTPException(status_code=400, detail="El archivo no tiene tablas para procesar")
         
     
     # Crear una lista para almacenar los registros de Insercion_Datos del resto de las páginas
@@ -87,9 +91,9 @@ async def create_upload_file(file: UploadFile = File(...)):
                 ))
 
         # Insertar los registros del resto de las páginas a la base de datos
-        insertar_datos_base(data_resto, db_conn)
+        insert_data_base(data_resto, db_conn)
     except IndexError:
-        raise HTTPException(status_code=400, detail=f"Error {type(e).__name__}: {str(e)}")
+        raise HTTPException(status_code=400, detail="El archivo no tiene tablas para procesar")
     
     # Cerrar la conexión a la base de datos
     count = len(data_pg1) + len(data_resto)
@@ -98,7 +102,7 @@ async def create_upload_file(file: UploadFile = File(...)):
     
     return "Archivo Procesado"
 
-def insertar_datos_base(data_framework, db_conn):
+def insert_data_base(data_framework, db_conn):
     for data in data_framework:
         validation = db_conn.consultar_registro(data)
         
@@ -106,3 +110,10 @@ def insertar_datos_base(data_framework, db_conn):
             db_conn.actualizar_registro(data)
         else:
             db_conn.insertar_registro(data)
+            
+async def save_file_locally(file: UploadFile):
+    file_name = file.filename
+    file_location = f"files/{file_name}"
+    with open(file_location, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+    return file_location
