@@ -89,7 +89,6 @@ async def create_upload_file(file: UploadFile = File(...)):
                     documento=None,
                     valor=row[5]
                 ))
-
         # Insertar los registros del resto de las páginas a la base de datos
         insert_data_base(data_resto, db_conn)
     except IndexError:
@@ -104,12 +103,13 @@ async def create_upload_file(file: UploadFile = File(...)):
 
 def insert_data_base(data_framework, db_conn):
     for data in data_framework:
-        validation = db_conn.consultar_registro(data)
-        
-        if (validation):
-            db_conn.actualizar_registro(data)
-        else:
-            db_conn.insertar_registro(data)
+        valor = data.valor
+        if valor is not None and valor != "":
+            validation = db_conn.consultar_registro(data)
+            if (validation):
+                db_conn.actualizar_registro(data)
+            else:
+                db_conn.insertar_registro(data)
             
 async def save_file_locally(file: UploadFile):
     file_name = file.filename

@@ -58,16 +58,22 @@ class DB_Connection:
         if registro.referencia_1 is not None:
             try:
                 ref_1 = int(float(registro.referencia_1))
-            except ValueError:
-                ref_1 = None
+            except (ValueError, TypeError):
+                if registro.referencia_1.strip() == '':
+                    ref_1 = None
+                else:
+                    ref_1 = str(registro.referencia_1)
         else:
             ref_1 = ""
 
         if registro.referencia_2 is not None:
             try:
                 ref_2 = int(float(registro.referencia_2))
-            except ValueError:
-                ref_2 = None
+            except (ValueError, TypeError):
+                if registro.referencia_2.strip() == '':
+                    ref_2 = None
+                else:
+                    ref_2 = str(registro.referencia_2)
         else:
             ref_2 = ""
         
@@ -75,7 +81,10 @@ class DB_Connection:
             try:
                 document = int(float(registro.documento))
             except ValueError:
-                document = None
+                if registro.documento.strip() == '':
+                    document = None
+                else:
+                    document = str(registro.document)
         else:
             document = None
         
@@ -110,16 +119,22 @@ class DB_Connection:
         if registro.referencia_1 is not None:
             try:
                 ref_1 = int(float(registro.referencia_1))
-            except ValueError:
-                ref_1 = None
+            except (ValueError, TypeError):
+                if registro.referencia_1.strip() == '':
+                    ref_1 = None
+                else:
+                    ref_1 = str(registro.referencia_1)
         else:
             ref_1 = ""
 
         if registro.referencia_2 is not None:
             try:
                 ref_2 = int(float(registro.referencia_2))
-            except ValueError:
-                ref_2 = None
+            except (ValueError, TypeError):
+                if registro.referencia_2.strip() == '':
+                    ref_2 = None
+                else:
+                    ref_2 = str(registro.referencia_2)
         else:
             ref_2 = ""
         
@@ -127,7 +142,10 @@ class DB_Connection:
             try:
                 document = int(float(registro.documento))
             except ValueError:
-                document = None
+                if registro.documento.strip() == '':
+                    document = None
+                else:
+                    document = str(registro.document)
         else:
             document = None
         
